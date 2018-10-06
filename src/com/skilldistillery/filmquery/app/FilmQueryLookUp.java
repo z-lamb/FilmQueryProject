@@ -1,7 +1,6 @@
 package com.skilldistillery.filmquery.app;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,7 +10,7 @@ import com.skilldistillery.filmquery.entities.Film;
 public class FilmQueryLookUp {
 
 	private FilmQueryPrint printQuery = new FilmQueryPrint();
-	protected void lookUpFilmById(DatabaseAccessorObject dao, Scanner input) {
+	protected Film lookUpFilmById(DatabaseAccessorObject dao, Scanner input) {
 
 		String filmId = null;
 		Film filmRequested = null;
@@ -31,7 +30,7 @@ public class FilmQueryLookUp {
 						System.out.println("Id: " + parseFilmId + " is not a valid Id number. Please try again.");
 					} else {
 						System.out.println("The film you requested is: ");
-						printQuery.printSingleQuery(filmRequested);
+						printQuery.printQuery(filmRequested);
 
 					}
 
@@ -41,9 +40,11 @@ public class FilmQueryLookUp {
 				}
 			}
 		} while (!filmId.matches("^[0-9]*$") || filmRequested == null);
+
+		return filmRequested;
 	}
 
-	protected void lookUpFilmByKeyword(DatabaseAccessorObject dao, Scanner input) {
+	protected List<Film> lookUpFilmByKeyword(DatabaseAccessorObject dao, Scanner input) {
 		String keyword;
 		List<Film> keywordFilms = null;
 
@@ -57,6 +58,7 @@ public class FilmQueryLookUp {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		if (keywordFilms.size() == 0) {
 			System.out.println("There were no films that containted the keyword: " + keyword);
 		} else {
@@ -66,5 +68,6 @@ public class FilmQueryLookUp {
 			
 		}
 
+		return keywordFilms;
 	}
 }

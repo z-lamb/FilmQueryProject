@@ -13,4 +13,11 @@ public class FilmQueryMenus {
 		System.out.print(">> ");
 	}
 	
+	// Display sub menu
+	protected void subMenu() {
+		System.out.println("Choose from the menu options below");
+		System.out.println("1. See all film details");
+		System.out.println("0. Return to main menu");
+		System.out.print(">> ");
+	}
 }
