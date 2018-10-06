@@ -56,7 +56,7 @@ public class FilmQueryOperation {
 			break;
 
 		case "2":
-			
+			lookUp.lookUpFilmByKeyword(dao, input);
 			
 			break;
 		
