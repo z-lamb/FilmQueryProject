@@ -1,88 +1,122 @@
 package com.skilldistillery.filmquery.entities;
 
+import java.util.List;
 
 public class Film {
 	private int id;
 	private String title;
 	private String description;
-	private int releaseYear;
-	private short languageId;
-	private byte  rentalDuration;
+	private short releaseYear;
+	private int languageId;
+	private int rentalDuration;
 	private double rentalRate;
-	private short length;
+	private int length;
 	private double replacementCost;
 	private String rating;
 	private String specialFeatures;
+	private List<Actor> actors;
+
+	public List<Actor> getActors() {
+		return actors;
+	}
+
+	public void setActors(List<Actor> actors) {
+		this.actors = actors;
+	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getReleaseYear() {
+
+	public short getReleaseYear() {
 		return releaseYear;
 	}
-	public void setReleaseYear(int releaseYear) {
+
+	public void setReleaseYear(short releaseYear) {
 		this.releaseYear = releaseYear;
 	}
-	public short getLanguageId() {
+
+	public int getLanguageId() {
 		return languageId;
 	}
-	public void setLanguageId(short languageId) {
+
+	public void setLanguageId(int languageId) {
 		this.languageId = languageId;
 	}
-	public byte getRentalDuration() {
+
+	public int getRentalDuration() {
 		return rentalDuration;
 	}
-	public void setRentalDuration(byte rentalDuration) {
+
+	public void setRentalDuration(int rentalDuration) {
 		this.rentalDuration = rentalDuration;
 	}
+
 	public double getRentalRate() {
 		return rentalRate;
 	}
+
 	public void setRentalRate(double rentalRate) {
 		this.rentalRate = rentalRate;
 	}
-	public short getLength() {
+
+	public int getLength() {
 		return length;
 	}
-	public void setLength(short length) {
+
+	public void setLength(int length) {
 		this.length = length;
 	}
+
 	public double getReplacementCost() {
 		return replacementCost;
 	}
+
 	public void setReplacementCost(double replacementCost) {
 		this.replacementCost = replacementCost;
 	}
+
 	public String getRating() {
 		return rating;
 	}
+
 	public void setRating(String rating) {
 		this.rating = rating;
 	}
+
 	public String getSpecialFeatures() {
 		return specialFeatures;
 	}
+
 	public void setSpecialFeatures(String specialFeatures) {
 		this.specialFeatures = specialFeatures;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((actors == null) ? 0 : actors.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + id;
 		result = prime * result + languageId;
@@ -99,6 +133,7 @@ public class Film {
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -108,6 +143,11 @@ public class Film {
 		if (getClass() != obj.getClass())
 			return false;
 		Film other = (Film) obj;
+		if (actors == null) {
+			if (other.actors != null)
+				return false;
+		} else if (!actors.equals(other.actors))
+			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
@@ -144,15 +184,18 @@ public class Film {
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "Film [id=" + id + ", title=" + title + ", description=" + description + ", releaseYear=" + releaseYear
 				+ ", languageId=" + languageId + ", rentalDuration=" + rentalDuration + ", rentalRate=" + rentalRate
 				+ ", length=" + length + ", replacementCost=" + replacementCost + ", rating=" + rating
-				+ ", specialFeatures=" + specialFeatures + "]";
+				+ ", specialFeatures=" + specialFeatures + ", actors=" + actors + "]";
 	}
-	public Film(int id, String title, String description, int releaseYear, short languageId, byte rentalDuration,
-			double rentalRate, short length, double replacementCost, String rating, String specialFeatures) {
+
+	public Film(int id, String title, String description, short releaseYear, int languageId, int rentalDuration,
+			double rentalRate, int length, double replacementCost, String rating, String specialFeatures,
+			List<Actor> actors) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -165,54 +208,11 @@ public class Film {
 		this.replacementCost = replacementCost;
 		this.rating = rating;
 		this.specialFeatures = specialFeatures;
+		this.actors = actors;
 	}
+
 	public Film() {
 		super();
 	}
-	
-	
-	
-//	private static final String URL = "jdbc:mysql://localhost:3306/sdvid?useSSL=false";
-//
-//	public Film() {
-//	}
-//
-//	public Film(int filmId, String title, String desc, short releaseYear, int langId, int rentDur, double rate,
-//			int length, double repCost, String rating, String features) {
-//	}
-//
-//	public List<Film> getFilmsByActorId(int actorId) {
-//		String user = "student";
-//		String pass = "student";
-//		List<Film> films = new ArrayList<>();
-//		try {
-//			Connection conn = DriverManager.getConnection(URL, user, pass);
-//			String sql = "SELECT id, title, description, release_year, language_id, rental_duration, rental_rate, 								length, replacement_cost, rating, special_features FROM film JOIN film_actor ON film.id = 								film_actor.film_id WHERE actor_id = ?";
-//			PreparedStatement stmt = conn.prepareStatement(sql);
-//			stmt.setInt(1, actorId);
-//			ResultSet rs = stmt.executeQuery();
-//			while (rs.next()) {
-//				int filmId = rs.getInt("id");
-//				String title = rs.getString("title");
-//				String desc = rs.getString("description");
-//				short releaseYear = rs.getShort("release_year");
-//				int langId = rs.getInt("language_id");
-//				int rentDur = rs.getInt("rental_duration");
-//				double rate = rs.getDouble("rental_rate");
-//				int length = rs.getInt("length");
-//				double repCost = rs.getDouble("replacement_cost");
-//				String rating = rs.getString("rating");
-//				String features = rs.getString("special_features");
-//				Film film = new Film(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
-//						features);
-//				films.add(film);
-//			}
-//			rs.close();
-//			stmt.close();
-//			conn.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return films;
-//	}
+
 }
