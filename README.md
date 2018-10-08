@@ -146,7 +146,7 @@ After that has finished it will close the Prepared Statement and connection and 
 - One of the stretch goals was to print out the category of the movie. And in whatever way I looked at the categories I was only able to see one category per movie. But the way the stretch goal was worded made me thing there was more than on category per movie. I was not able to figure this out
 - It seemed as though I should have been able to encapsulate more but I was unsure of how to go about it and if I was encapsulating too much already. One method that I would think about encapsulating more is the filmByKeyword because it is over 50 lines of code long. This seems long to me because most of my programs have not had methods there were over 50 lines of code
 - I am not sure if the ordering of the methods matter inside of a class. I imagine that it doesn't but I still try to make the orderly so that it is more readable
-- Another thing that I am unsure about is when you should do a try/catch over just declaring an exception can be thrown when you just want the program to stop and pring the stack trace
+- Another thing that I am unsure about is when you should do a try/catch over just declaring an exception can be thrown when you just want the program to stop and print the stack trace
 
 #### Things I was unable to add or incorporate
 - Test Driven Development with JUnit tests
