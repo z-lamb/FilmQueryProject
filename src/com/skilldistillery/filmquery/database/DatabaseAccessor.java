@@ -6,6 +6,7 @@ import java.util.List;
 import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
 
+// interface to create contract with the Database Accessor Object on the methods listed
 public interface DatabaseAccessor {
 	public Film getFilmById(int filmId) throws SQLException;
 
@@ -16,5 +17,7 @@ public interface DatabaseAccessor {
 	public List<Actor> getActorsByFilmId(int filmId) throws SQLException;
 
 	public List<Film> getFilmsByKeyword(String keyword) throws SQLException;
+
+	public List<Film> getFilmConditionByFilmId(int filmId) throws SQLException;
 
 }

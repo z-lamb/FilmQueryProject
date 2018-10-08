@@ -3,11 +3,22 @@ package com.skilldistillery.filmquery.entities;
 import java.util.List;
 
 public class Actor {
+	
+	/*
+	 * Private actor fields
+	 */
 	private int id;
 	private String firstName;
 	private String lastName;
 	private List<Film> films;
 
+	/*
+	 * Items generated for Actor Class
+	 * Getters and Setters
+	 * Hashcode and Equals
+	 * To String
+	 * Constructors
+	 */
 	public int getId() {
 		return id;
 	}
@@ -39,7 +50,7 @@ public class Actor {
 	public void setFilms(List<Film> films) {
 		this.films = films;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

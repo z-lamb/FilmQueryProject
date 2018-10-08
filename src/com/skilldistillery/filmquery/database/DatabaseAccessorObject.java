@@ -9,8 +9,15 @@ import com.skilldistillery.filmquery.entities.Film;
 
 public class DatabaseAccessorObject implements DatabaseAccessor {
 
+	/*
+	 * Database address, username, password
+	 */
 	private static final String URL = "jdbc:mysql://localhost:3306/sdvid?useSSL=false";
-
+	private static final String user = "student";
+	private static final String pass = "student";
+	/*
+	 * Driver to connect to the database
+	 */
 	static {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -19,16 +26,25 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 	}
 
+	/*
+	 * Method to get Film By Id
+	 */
 	@Override
 	public Film getFilmById(int filmId) throws SQLException {
+		
+		/*
+		 * Connection to the database and create new reference to a film object to be returned
+		 */
 		Film film = null;
-		String user = "student";
-		String pass = "student";
-
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 
-		String sql = "SELECT film.id, film.title, film.description, film.release_year, language.name, film.rental_duration, film.rental_rate, film.length, film.replacement_cost, film.rating, film.special_features FROM film JOIN language ON language.id = film.language_id WHERE film.id = ?";
-
+		/*
+		 * SQL string to be passed to the prepared statement along with the requested ID which returns the query
+		 * If there is a query that is returned it will add each item requested to a new film object
+		 * After that has finished it will close the Prepared Statement and connection and return the film object
+		 */
+		String sql = "SELECT film.id, film.title, film.description, film.release_year, language.name, film.rental_duration, film.rental_rate, film.length, film.replacement_cost, film.rating, film.special_features, category.name FROM film JOIN language ON language.id = film.language_id JOIN film_category ON film.id = film_category.film_id JOIN category ON film_category.category_id = category.id WHERE film.id = ?";
+		
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, filmId);
 		ResultSet filmResult = stmt.executeQuery();
@@ -46,7 +62,9 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setReplacementCost(filmResult.getDouble("replacement_cost"));
 			film.setRating(filmResult.getString("rating"));
 			film.setSpecialFeatures(filmResult.getString("Special_features"));
+			film.setCategory(filmResult.getString("category.name"));
 			film.setActors(getActorsByFilmId(filmId));
+			film.setConditionList(getFilmConditionByFilmId(filmId));
 		}
 
 		stmt.close();
@@ -54,18 +72,28 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return film;
 	}
 
+	/*
+	 * Method to get Actor By Id
+	 */
 	@Override
 	public Actor getActorById(int actorId) throws SQLException {
 
+		/*
+		 * Connection to the database and create new reference an actor object to be returned
+		 */
 		Actor actor = null;
-		String user = "student";
-		String pass = "student";
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 
+		/*
+		 * SQL string to be passed to the prepared statement along with the requested ID which returns the query
+		 * If there is a query that is returned it will add each item requested to a new actor object
+		 * After that has finished it will close the Prepared Statement and connection and return the actor object
+		 */
 		String sql = "SELECT id, first_name, last_name FROM actor WHERE id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, actorId);
 		ResultSet actorResult = stmt.executeQuery();
+		
 		if (actorResult.next()) {
 			actor = new Actor();
 			actor.setId(actorResult.getInt("id"));
@@ -76,22 +104,31 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		stmt.close();
 		conn.close();
-
 		return actor;
 	}
 
+	/*
+	 * Method to get Actor By Film Id
+	 */
 	@Override
 	public List<Actor> getActorsByFilmId(int filmId) throws SQLException {
 
+		/*
+		 * Connection to the database and create new object to be returned
+		 */
 		List<Actor> actors = new ArrayList<>();
-		String user = "student";
-		String pass = "student";
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 
+		/*
+		 * SQL string to be passed to the prepared statement along with the requested ID which returns the query
+		 * If there is a query that is returned it will add each item requested to a new actor object
+		 * After that has finished it will close the Prepared Statement and connection and return the actor list object
+		 */
 		String sql = "SELECT actor.id, actor.first_name, actor.last_name FROM actor JOIN film_actor ON actor.id = film_actor.actor_id WHERE film_id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, filmId);
 		ResultSet rs = stmt.executeQuery();
+		
 		while (rs.next()) {
 			Actor actor = new Actor();
 			actor.setId(rs.getInt("id"));
@@ -100,23 +137,31 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 			actors.add(actor);
 		}
-		rs.close();
+		
 		stmt.close();
 		conn.close();
-
 		return actors;
 	}
 
+	/*
+	 * Method to get Films By Actor Id
+	 */
 	@Override
 	public List<Film> getFilmsByActorId(int actorId) throws SQLException {
+		
+		/*
+		 * Connection to the database and create new object to be returned
+		 */
 		List<Film> films = new ArrayList<>();
-		String user = "student";
-		String pass = "student";
-
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 
-		String sql = "SELECT film.id, title, description, release_year, language.name, rental_duration, rental_rate, length, replacement_cost, rating, special_features FROM film JOIN film_actor ON film.id = film_actor.film_id JOIN language ON language.id = film.language_id WHERE actor_id = ?";
-
+		/*
+		 * SQL string to be passed to the prepared statement along with the requested ID which returns the query
+		 * If there is a query that is returned it will add each item requested to a new film object
+		 * After that has finished it will close the Prepared Statement and connection and return the film list object
+		 */
+		String sql = "SELECT film.id, title, description, release_year, language.name, rental_duration, rental_rate, length, replacement_cost, rating, special_features, category.name FROM film JOIN film_actor ON film.id = film_actor.film_id JOIN language ON language.id = film.language_id JOIN film_category ON film.id = film_category.film_id JOIN category ON film_category.category_id = category.id WHERE actor_id = ?";
+		
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, actorId);
 		ResultSet rs = stmt.executeQuery();
@@ -135,28 +180,35 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setReplacementCost(rs.getDouble("replacement_cost"));
 			film.setRating(rs.getString("rating"));
 			film.setSpecialFeatures(rs.getString("special_features"));
+			film.setCategory(rs.getString("category.name"));
 
 			films.add(film);
 		}
-		rs.close();
+		
 		stmt.close();
 		conn.close();
-
 		return films;
 	}
 
-//	
+	/*
+	 * Method to get Films By Keyword
+	 */
 	@Override
 	public List<Film> getFilmsByKeyword(String keyword) throws SQLException {
+		
+		/*
+		 * Connection to the database and create new object to be returned
+		 */
 		List<Film> films = new ArrayList<>();
-		String user = "student";
-		String pass = "student";
-
 		Connection conn = DriverManager.getConnection(URL, user, pass);
 
-		String sql = "SELECT film.id, film.title, film.description, film.release_year, language.name, film.rental_duration, film.rental_rate, film.length, film.replacement_cost, film.rating, film.special_features FROM film JOIN language ON language.id = film.language_id WHERE title LIKE ? OR description LIKE ?";
-
-//		select language.name from language join film on language.id = film.language_id; 
+		/*
+		 * SQL string to be passed to the prepared statement along with the requested ID which returns the query
+		 * If there is a query that is returned it will add each item requested to a new film object
+		 * After that has finished it will close the Prepared Statement and connection and return the film list object
+		 */
+		String sql = "SELECT film.id, film.title, film.description, film.release_year, language.name, film.rental_duration, film.rental_rate, film.length, film.replacement_cost, film.rating, film.special_features, category.name FROM film JOIN language ON language.id = film.language_id JOIN film_category ON film.id = film_category.film_id JOIN category ON film_category.category_id = category.id WHERE title LIKE ? OR description LIKE ?";
+		
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setString(1, "%" + keyword + "%");
 		stmt.setString(2, "%" + keyword + "%");
@@ -176,15 +228,87 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setReplacementCost(rs.getDouble("replacement_cost"));
 			film.setRating(rs.getString("rating"));
 			film.setSpecialFeatures(rs.getString("special_features"));
+			film.setCategory(rs.getString("category.name"));
 			film.setActors(getActorsByFilmId(rs.getInt("id")));
+			film.setConditionList(getFilmConditionByFilmId(rs.getInt("id")));
 
 			films.add(film);
 		}
-		rs.close();
+		
 		stmt.close();
 		conn.close();
-
 		return films;
 	}
+	
+	/*
+	 * Method to get Film Condition By Film Id
+	 */
+	@Override
+	public List<Film> getFilmConditionByFilmId(int filmId) throws SQLException {
 
+		/*
+		 * Connection to the database and create new object to be returned
+		 */
+		List<Film> conditionList = new ArrayList<>();
+		Connection conn = DriverManager.getConnection(URL, user, pass);
+
+		/*
+		 * SQL strings to be passed to the prepared statement along with the requested ID which returns the query
+		 * If there is a query that is returned it will add each item requested to a new film object
+		 * After that has finished it will close the Prepared Statement and connection and return the film list object
+		 */
+		String sql = "SELECT COUNT(media_condition) from inventory_item where media_condition = \"new\" AND film_id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		ResultSet conditionResult = stmt.executeQuery();
+		if (conditionResult.next()) {
+			Film condition = new Film();
+			condition.setNumberOfNew(conditionResult.getInt("Count(media_condition)"));
+			conditionList.add(condition);
+		}
+		
+		sql = "SELECT COUNT(media_condition) from inventory_item where media_condition = \"used\" AND film_id = ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		conditionResult = stmt.executeQuery();
+		if (conditionResult.next()) {
+			Film condition = new Film();
+			condition.setNumberOfUsed(conditionResult.getInt("Count(media_condition)"));
+			conditionList.add(condition);
+		}
+		
+		sql = "SELECT COUNT(media_condition) from inventory_item where media_condition = \"damaged\" AND film_id = ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		conditionResult = stmt.executeQuery();
+		if (conditionResult.next()) {
+			Film condition = new Film();
+			condition.setNumberOfDamaged(conditionResult.getInt("Count(media_condition)"));
+			conditionList.add(condition);
+		}
+		
+		sql = "SELECT COUNT(media_condition) from inventory_item where media_condition = \"lost\" AND film_id = ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		conditionResult = stmt.executeQuery();
+		if (conditionResult.next()) {
+			Film condition = new Film();
+			condition.setNumberOfLost(conditionResult.getInt("Count(media_condition)"));
+			conditionList.add(condition);
+		}
+		
+		sql = "SELECT COUNT(media_condition) from inventory_item where media_condition = \"NA\" AND film_id = ?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		conditionResult = stmt.executeQuery();
+		if (conditionResult.next()) {
+			Film condition = new Film();
+			condition.setNumberOfNA(conditionResult.getInt("Count(media_condition)"));
+			conditionList.add(condition);
+		}
+		
+		stmt.close();
+		conn.close();
+		return conditionList;
+	}
 }
