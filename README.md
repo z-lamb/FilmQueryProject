@@ -153,4 +153,4 @@ After that has finished it will close the Prepared Statement and connection and 
 - More ways to access the database so that the user would have more options of seeing films from
 - I wanted to be able to have a store connect to the inventory portion to see how many and what movies are at each store location
 - I am not sure this one would be possible but a way to see how many times a movie has been rented
-- It would have been nice to allow the user to select what detials of a movie they would like to see instead of a basic print out of the film or all of the details of a film
+- It would have been nice to allow the user to select what details of a movie they would like to see instead of a basic print out of the film or all of the details of a film
